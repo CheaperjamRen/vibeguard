@@ -2,9 +2,9 @@
 
 **A small brief before AI writes code.**
 
-[中文说明](./README.zh-CN.md)
+(For people using AI coding tools, vibe coding, coding agents, or spec-driven development workflows.)
 
-For people using AI coding tools, vibe coding, coding agents, or spec-driven development workflows.
+[中文说明](./README.zh-CN.md)
 
 Most AI coding problems do not start in the code.
 They start when the task is vague.
