@@ -1,50 +1,57 @@
-# Example: bugfix brief
+# Example: Bugfix Brief
 
-## Rough request
+Prompt:
 
 ```text
-The upload progress sometimes gets stuck. Fix it.
+Use VibeGuard to prepare a bugfix brief.
+
+The settings page sometimes shows the previous user's data after switching accounts.
 ```
 
-## Better VibeGuard brief
+Expected VibeGuard output shape:
 
-```text
-Goal:
-Fix the upload progress UI so it reaches a correct final state after upload completion or failure.
+```markdown
+# Bugfix Brief
 
-User / scenario:
-A user uploads a large file and expects the progress indicator to accurately show uploading, success, or failure.
+## Expected behavior
 
-First version includes:
-- Identify the root cause before changing code
-- Preserve existing upload API behavior
-- Update progress state only where upload state is handled
-- Show a clear final state for success and failure
+After switching accounts, the settings page should show only the current user's data.
 
-Not included:
-- New upload provider
-- New retry system
-- New file manager UI
-- Redesigning the upload flow
+## Actual behavior
 
-Allowed changes:
-- Upload progress state handling
-- Upload progress display component
-- Related tests if present
+The page sometimes shows data from the previous account.
 
-Must not change:
-- Authentication
-- File storage API
-- Unrelated upload settings
+## Reproduction
 
-Done when:
-- Progress no longer stays in an intermediate state after success
-- Failure state is visible when upload fails
-- Existing successful uploads still work
-- Root cause is explained in the review note
+Unknown. Need confirmation.
 
-Stop and ask if:
-- The root cause cannot be proven
-- The fix requires changing the upload API contract
-- Two patch attempts fail to fix the same symptom
+## Likely risk area
+
+- User/session state ownership.
+- Client-side cache invalidation.
+- Settings page data fetch lifecycle.
+
+## Patch limits
+
+- Do not hide the issue by forcing a full page reload unless confirmed.
+- Do not add a global variable to track the current user.
+- Do not suppress rendering errors without explaining the root cause.
+
+## Code structure constraints
+
+- Identify where user identity is stored and where settings data is fetched.
+- Keep user-specific data tied to the current session/user ID.
+- Clear or refetch stale settings data when the active user changes.
+
+## Acceptance checks
+
+- Switching from user A to user B never shows user A settings on user B's page.
+- Refreshing the settings page still loads the correct current user.
+- Existing login/logout flow still works.
+
+## Stop if
+
+- The project has multiple competing sources of current user state.
+- The API does not return enough information to verify ownership.
+- Fixing the issue requires changing authentication/session behavior.
 ```
