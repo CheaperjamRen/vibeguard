@@ -1,210 +1,124 @@
-# VibeGuard
+# VibeGuard 中文说明
 
-**让 AI 写代码前，先把需求说明白。**
+VibeGuard 是一个轻量的 AI Coding 开工前 brief skill。
 
-[English README](./README.md)
+它的用途很直接：在让 AI Coding 工具真正改代码之前，先把任务目标、边界、假设、上下文、验收方式、停止条件和代码结构约束写清楚。
 
-试过用AI写代码应该都体会过，AI总会莫名其妙写出一坨屎山，并且对你最初idea进行莫名其妙的曲解。
-（跟玩传话游戏似的，一个人排成排传话到最后一个人，传着传着就莫名其妙起来了，不能说略有失真吧，只能说与原意毫无关系）
+## 安装
 
-很多 AI 写代码的问题，是从任务没说清楚开始的。
+如果你的 Coding Agent 支持自定义 skill，把这个仓库目录复制到它的 skills/extensions 目录里，并确保 `SKILL.md` 位于目录根部。
 
-你让 AI 做一个功能，它一开始写得很快。然后它开始加你没要求的东西，改你没让它改的文件，修 bug 时只是在报错处打补丁，聊着聊着上下文越来越长，最后谁也说不清最开始到底想做什么。
-
-VibeGuard 想解决的就是这个时刻：
-
-> 在让 AI 写代码前，先写清楚：你想要什么、不想要什么、它能改哪里、不能改哪里、什么叫完成、什么时候必须停下来问你。
-
-它不是一个新的 Coding Agent。它更像是你在使用 AI Coding 前的一张简短说明书。
-
-## 最短版本
-
-让 AI 写代码前，先写下这 6 件事：
-
-1. **一句话目标**：这次到底要做什么？
-2. **非目标**：这次明确不做什么？
-3. **能改什么**：AI 可以改哪些地方？
-4. **不能改什么**：哪些地方不能碰？
-5. **什么叫完成**：怎样才算这个任务做完？
-6. **什么时候停下来问**：什么情况不能继续猜？
-
-这就是 VibeGuard 的核心。
-
-## 为什么有用？
-
-AI 很擅长顺着你给的信息继续写。
-
-问题也在这里。
-
-如果你的需求很模糊，它就会自己补。
-如果聊天记录太长，旧想法和当前任务就会混在一起。
-如果你只丢一句“这里报错了，修一下”，它很可能只是把报错压下去，而不是先搞清楚原因。
-
-VibeGuard 的目标不是给 AI 更多上下文，而是给它更准的上下文。
-
-这补就不是让AI更快写，而是让AI少猜，这真的很重要！
-（AI在前面写人脑在后面追，怎么追都追不上，看着一坨屎山代码发现让AI越改越bullshit…）
-（我已经被被折磨的心态爆炸好多次了…天知道我因此直接代码写一半然后全部重来了多少次）
-
-## 它会生成什么？
-
-VibeGuard 会在你的项目里放一个小文件夹：
-
-```text
-.vibeguard/
-  vision-lock.md
-  context-budget.md
-  acceptance-contract.md
-  tasks.md
-  current-task.md
-  review.md
-  handoff.md
-```
-
-这些文件是给 AI 工作时看的当前上下文。
-
-最重要的是：
-
-```text
-.vibeguard/current-task.md
-```
-
-很多时候，你不应该把一整段又长又乱的聊天记录丢给 AI。你只需要把当前任务说明给它。
-
-## 快速开始
-
-复制或克隆这个仓库后，在你的项目里初始化 VibeGuard 文件：
+常见方式：
 
 ```bash
-python scripts/vibeguard_init.py --project /path/to/your-project
+git clone <your-repo-url> vibeguard
 ```
 
-编辑当前任务：
+然后把 `vibeguard/` 文件夹复制或软链接到你的 Coding Agent 的自定义 skill 目录。
 
-```text
-/path/to/your-project/.vibeguard/current-task.md
-```
+如果你使用的工具不支持直接安装 skill，也可以打开 `SKILL.md`，把它作为 system/custom instruction 使用。建议保留旁边的 `references/` 文件夹，因为 VibeGuard 会按任务需要读取里面的模板、检查清单和示例。
 
-生成一份短上下文：
+## 它解决什么问题
 
-```bash
-python scripts/vibeguard_context.py --project /path/to/your-project
-```
+VibeGuard 主要用于写代码之前。
 
-然后把生成的内容复制给你的 AI Coding 工具，让它只做这一个任务。
+它会帮你先想清楚：
 
-## 怎么跟 AI 说？
+- 这次到底要改什么？
+- 哪些明确不改？
+- 哪些文件、模块、接口、数据结构允许改？
+- 做完怎么算对？
+- 遇到什么情况 AI 不能继续猜，必须停下来问你？
+- 怎么避免代码耦合、全局状态、命名混乱、前后端边界不清这类后期很难查的问题？
 
-不要一上来就说：
+它不负责运行测试，也不替代 Coding Agent。它更像是给 Coding Agent 的开工前说明书，让你把模糊需求变成更清楚、更可控的执行 brief。
 
-```text
-帮我写这个功能。
-```
-
-可以先说：
-
-```text
-先别写代码。
-帮我把这个想法整理成一份 VibeGuard 说明书。
-
-请先帮我明确：
-- 一句话目标
-- 目标用户和使用场景
-- 第一版做到什么程度
-- 这次明确不做什么
-- 能改哪些地方
-- 哪些地方不能改
-- 什么叫完成
-- 什么情况必须停下来问我
-
-整理完之后，再输出一份 current-task brief，方便后面实现。
-```
-
-等说明书清楚以后，再让 AI 开始写代码。
-
-## 修 bug 时怎么用？
-
-不要只说：
-
-```text
-这里报错了，修一下。
-```
-
-更好的方式是给它：
-
-```text
-预期行为：
-实际行为：
-复现步骤：
-最近改过什么：
-允许改哪些文件：
-哪些地方不能改：
-什么叫修好：
-什么情况要停下来问我：
-```
-
-再加一句：
-
-```text
-先说明可能的根因，再改代码。不要连续两次失败后还继续打补丁。
-```
-
-这样可以减少那种“报错没了，但代码越来越奇怪”的情况。
-
-## 什么时候适合用？
+## 适合什么时候用
 
 适合这些场景：
 
-- 你有一个产品想法，但还没完全想清楚
-- AI 经常加你没要求的功能
-- 你总是反复解释同一个需求
-- 修 bug 修成一堆小补丁
-- 聊天记录太长，后面越来越乱
-- 你还不想上完整的 Spec-Driven Development 工具链，只想先有一个轻量习惯
+- 把一个模糊产品想法整理成开发 brief；
+- 准备把一个功能需求交给 AI Coding 工具；
+- 修 bug，但不想让 AI 只是把报错压下去；
+- 重构代码，但要保证外部行为不变；
+- 检查一段 AI Coding prompt 是否容易跑偏；
+- 判断当前需求能不能开工；
+- 长对话后整理交接摘要，让下一轮 AI 接上；
+- 一轮开发后生成版本更新说明或迭代日志；
+- 给任务增加代码结构约束，比如耦合、状态归属、API 契约、全局变量和命名。
 
-## 什么时候没必要用？
+## 核心输出
 
-这些情况可能没必要：
+- `VibeGuard Brief`：适合产品想法、功能开发、重构和复杂一点的任务。
+- `Current-Task Brief`：可以直接复制给 AI Coding 工具的短任务说明。
+- `Bugfix Brief`：整理预期行为、实际行为、复现步骤、根因检查和补丁边界。
+- `Gate Check`：判断任务是 `GO`、`GO WITH ASSUMPTIONS`，还是 `NO-GO`。
+- `Prompt Review`：检查一段 prompt 哪里容易让 AI 跑偏。
+- `Handoff Brief`：把长对话压缩成下一轮 AI 可以接上的上下文。
+- `Release Notes / Iteration Log`：总结这轮改了什么、为什么重要、还有什么没做。
+- `Coding Guardrails`：补充代码结构约束，减少后期维护问题。
 
-- 改一行文案
-- 很小的 CSS 调整
-- 非常明确的单文件改动
-- 只是随手试验，正确性不重要
-
-## 和 GitHub Spec Kit 有什么区别？
-
-GitHub Spec Kit 是一套完整的 Spec-Driven Development 工具链。它有 CLI、Agent 集成、命令、扩展、预设和更完整的 SDD 流程。
-
-VibeGuard 刻意做得更小。
-
-它不是要替代 Spec Kit（替代不了一点，spec kit 很吊），而是给那些还不想装一整套工具链的人，一个更轻的开始方式。
-（Spec Kit 安装起来有点太繁琐了，非技术人员或者不想花时间捅咕太完善一整条coding工程Harness的话，用这个skill就刚刚好）
-（懒癌专用…）
-
-简单说：
+## 目录结构
 
 ```text
-Spec Kit：完整的 Spec-Driven Development 工具链。
-VibeGuard：让 AI 写代码前先把需求说明白的小习惯。
+vibeguard/
+├── SKILL.md
+├── README.md
+├── README.zh-CN.md
+├── CHANGELOG.md
+├── LICENSE
+├── examples/
+│   ├── feature-brief.md
+│   ├── bugfix-brief.md
+│   └── coding-guardrails.md
+└── references/
+    ├── README.md
+    ├── templates.md
+    ├── clarification.md
+    ├── gates.md
+    ├── failure-modes.md
+    ├── spec-framework.md
+    ├── coding-guardrails.md
+    ├── release-notes.md
+    ├── usage-examples.md
+    └── wording.zh-CN.md
 ```
 
-## VibeGuard 不是什么？
+## 怎么使用
 
-VibeGuard 不是：
+可以这样对你的 AI 助手说：
 
-- Coding Agent
-- 完整 Harness 运行时
-- CI 系统
-- 测试工具
-- Code Review 替代品
-- 保证 AI 一定写对代码的神器
+```text
+Use VibeGuard to turn this feature idea into a Current-Task Brief before coding:
+[描述你的功能]
+```
 
-它只是一个让 AI Coding 对话不那么含糊、更容易继续的小工具。
+也可以说：
 
-## 项目状态
+```text
+Use VibeGuard to check whether this AI Coding prompt is ready:
+[粘贴你的 prompt]
+```
 
-早期公开版本。模板和流程已经可以用，但自动化部分刻意保持很轻。
+如果你担心代码结构问题，可以说：
+
+```text
+Use VibeGuard coding guardrails for this task. I am worried about global variables, state ownership, and front-end/back-end boundary mistakes.
+```
+
+VibeGuard 会先判断任务是 tiny、standard 还是 spec-level。小任务保持轻量，复杂或高风险任务才读取更完整的 references。
+
+## 设计原则
+
+- 小任务就按小任务处理，不要为了显得专业写一大堆文档。
+- 非目标和目标一样重要。
+- 把事实、假设、未知、废弃上下文分开。
+- 先写验收标准，再让 AI 实现。
+- 上下文要短而准，不要把长聊天记录全塞进去。
+- 不默认扩展范围。
+- 不随便新增全局状态、跨层调用或抽象。
+- 如果一个决策会改变实现方向，就让 AI 停下来问。
 
 ## License
 
-MIT
+MIT. See `LICENSE`.

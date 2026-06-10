@@ -1,5 +1,7 @@
 # VibeGuard
 
+[中文说明](README.zh-CN.md)
+
 VibeGuard is a lightweight pre-coding brief skill for AI Coding workflows.
 
 It helps you write down the task goal, boundaries, assumptions, context, acceptance checks, stop conditions, and code-structure guardrails before asking an AI Coding tool to edit code.
@@ -64,6 +66,7 @@ Use VibeGuard when you want to:
 vibeguard/
 ├── SKILL.md
 ├── README.md
+├── README.zh-CN.md
 ├── CHANGELOG.md
 ├── LICENSE
 ├── examples/
