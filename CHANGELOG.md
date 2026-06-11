@@ -1,5 +1,19 @@
 # Changelog
 
+## v1.1.1
+
+Small GitHub-ready skill refinement inspired by public skill-design lessons.
+
+### Added
+
+- `references/gotchas.md` for high-signal AI Coding failure points.
+- `references/evals.md` for lightweight regression prompts.
+
+### Changed
+
+- Updated `SKILL.md` reference routing to include gotchas and evals.
+- Updated README files and references index to describe the new progressive-disclosure files.
+
 ## v1.1.0
 
 Initial GitHub-ready release.

@@ -2,7 +2,7 @@
 
 VibeGuard 是一个轻量的 AI Coding 开工前 brief skill。
 
-它的用途很直接：在让 AI Coding 工具真正改代码之前，先把任务目标、边界、假设、上下文、验收方式、停止条件和代码结构约束写清楚。
+它的用途很直接：在让 AI Coding 工具真正改代码之前，先把任务目标、边界、假设、上下文、验收方式、停止条件和代码结构约束写清楚。它也补充了高信号 gotchas 和轻量 eval prompts，方便后续持续维护这个 skill。
 
 ## 安装
 
@@ -45,7 +45,8 @@ VibeGuard 主要用于写代码之前。
 - 判断当前需求能不能开工；
 - 长对话后整理交接摘要，让下一轮 AI 接上；
 - 一轮开发后生成版本更新说明或迭代日志；
-- 给任务增加代码结构约束，比如耦合、状态归属、API 契约、全局变量和命名。
+- 给任务增加代码结构约束，比如耦合、状态归属、API 契约、全局变量和命名；
+- 维护或改造这个 skill 时，用 gotchas 和 eval prompts 检查它是否仍然有效。
 
 ## 核心输出
 
@@ -57,6 +58,7 @@ VibeGuard 主要用于写代码之前。
 - `Handoff Brief`：把长对话压缩成下一轮 AI 可以接上的上下文。
 - `Release Notes / Iteration Log`：总结这轮改了什么、为什么重要、还有什么没做。
 - `Coding Guardrails`：补充代码结构约束，减少后期维护问题。
+- `Gotchas / Evals`：记录高风险翻车点，并提供轻量 prompt 检查 skill 是否还能稳定产出有效 brief。
 
 ## 目录结构
 
@@ -77,10 +79,12 @@ vibeguard/
     ├── clarification.md
     ├── gates.md
     ├── failure-modes.md
+    ├── gotchas.md
     ├── spec-framework.md
     ├── coding-guardrails.md
     ├── release-notes.md
     ├── usage-examples.md
+    ├── evals.md
     └── wording.zh-CN.md
 ```
 
@@ -112,6 +116,7 @@ VibeGuard 会先判断任务是 tiny、standard 还是 spec-level。小任务保
 
 - 小任务就按小任务处理，不要为了显得专业写一大堆文档。
 - 非目标和目标一样重要。
+- 优先记录高信号 gotchas，不重复 AI Coding 工具默认知道的通用建议。
 - 把事实、假设、未知、废弃上下文分开。
 - 先写验收标准，再让 AI 实现。
 - 上下文要短而准，不要把长聊天记录全塞进去。

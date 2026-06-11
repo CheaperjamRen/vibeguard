@@ -4,7 +4,7 @@
 
 VibeGuard is a lightweight pre-coding brief skill for AI Coding workflows.
 
-It helps you write down the task goal, boundaries, assumptions, context, acceptance checks, stop conditions, and code-structure guardrails before asking an AI Coding tool to edit code.
+It helps you write down the task goal, boundaries, assumptions, context, acceptance checks, stop conditions, and code-structure guardrails before asking an AI Coding tool to edit code. It also includes high-signal gotchas and lightweight eval prompts for maintaining the skill over time.
 
 ## Install
 
@@ -47,7 +47,8 @@ Use VibeGuard when you want to:
 - decide whether a task is ready to start;
 - create a handoff summary for a long coding conversation;
 - write release notes or an iteration log after a round of changes;
-- add code-structure constraints around coupling, state ownership, API contracts, global variables, and naming.
+- add code-structure constraints around coupling, state ownership, API contracts, global variables, and naming;
+- maintain or adapt the skill using gotchas and lightweight eval prompts.
 
 ## Core Outputs
 
@@ -59,6 +60,7 @@ Use VibeGuard when you want to:
 - `Handoff Brief`: compresses a long conversation into a clean next-step context.
 - `Release Notes / Iteration Log`: summarizes what changed, why it matters, what remains, and what to do next.
 - `Coding Guardrails`: adds code-structure constraints for maintainability.
+- `Gotchas / Evals`: records high-risk failure points and lightweight prompts for checking whether the skill still works as intended.
 
 ## Repository Structure
 
@@ -79,10 +81,12 @@ vibeguard/
     ├── clarification.md
     ├── gates.md
     ├── failure-modes.md
+    ├── gotchas.md
     ├── spec-framework.md
     ├── coding-guardrails.md
     ├── release-notes.md
     ├── usage-examples.md
+    ├── evals.md
     └── wording.zh-CN.md
 ```
 
@@ -114,6 +118,7 @@ VibeGuard should first decide whether the task is tiny, standard, or spec-level.
 
 - Keep small tasks small.
 - Write non-goals as clearly as goals.
+- Prefer high-signal gotchas over generic AI Coding advice.
 - Separate facts, assumptions, unknowns, and deprecated context.
 - Define acceptance checks before implementation.
 - Prefer short, accurate context over long pasted history.

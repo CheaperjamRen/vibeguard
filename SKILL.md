@@ -1,7 +1,7 @@
 ---
 name: vibeguard
-version: 1.1.0
-description: 何时使用：当用户想用 AI 写代码、修 bug、做小产品、重构功能、整理需求、生成 PRD/技术方案/开发任务、避免 AI Coding 跑偏、控制需求边界、明确验收标准、整理 current-task brief、生成版本更新公告/迭代日志/开发回顾报告、检查一段提示词是否适合交给 ChatGPT/Cursor/Claude/Copilot 等 AI Coding 工具，或希望在编码前做轻量 spec / brief / go-no-go 判断时使用；也适用于用户担心代码耦合、前后端边界混乱、函数/接口命名不清、全局变量或全局状态滥用、状态归属不清、代码可维护性变差等 AI Coding 开发规范问题。
+version: 1.1.1
+description: 何时使用：当用户想用 AI 写代码、修 bug、做小产品、重构功能、整理需求、生成 PRD/技术方案/开发任务、避免 AI Coding 跑偏、控制需求边界、明确验收标准、整理 current-task brief、生成版本更新公告/迭代日志/开发回顾报告、检查一段提示词是否适合交给 ChatGPT/Cursor/Claude/Copilot 等 AI Coding 工具，或希望在编码前做轻量 spec / brief / go-no-go 判断时使用；也适用于用户担心代码耦合、前后端边界混乱、函数/接口命名不清、全局变量或全局状态滥用、状态归属不清、代码可维护性变差等 AI Coding 开发规范问题；维护者想用 gotchas/evals 检查该 skill 是否仍能产出具体、可执行、不跑偏的 brief 时也可使用。
 ---
 
 # VibeGuard：AI Coding 开工前简报助手
@@ -69,6 +69,7 @@ description: 何时使用：当用户想用 AI 写代码、修 bug、做小产�
 8. 不要把小需求自动升级成大工程。
 9. 不承诺“保证 AI 写对代码”，只负责让任务更清楚、更可控。
 10. 能带假设推进时，把假设写出来；不能带假设推进时，明确 No-go。
+11. 优先记录高信号 gotchas，不重复 AI Coding 工具默认知道的通用建议。
 
 ## 模式路由
 
@@ -90,7 +91,7 @@ description: 何时使用：当用户想用 AI 写代码、修 bug、做小产�
 
 ## references 使用方式
 
-`skill.md` 是主流程；`references/` 是按需查看的模板库、检查清单和示例库。不要在每次任务开始时把 references 全部读完。只在当前任务需要更完整模板、判断标准、踩坑清单或示例时读取对应文件。
+`SKILL.md` 是主流程；`references/` 是按需查看的模板库、检查清单、gotchas、evals 和示例库。不要在每次任务开始时把 references 全部读完。只在当前任务需要更完整模板、判断标准、踩坑清单、回归检查或示例时读取对应文件。
 
 按下面规则调用：
 
@@ -100,10 +101,12 @@ description: 何时使用：当用户想用 AI 写代码、修 bug、做小产�
 | 用户需求模糊，缺少关键输入 | `references/clarification.md` | 只问会影响实现方向的问题，避免机械追问 |
 | 用户问“现在能不能开工”，或需求风险较高 | `references/gates.md` | 做 GO / GO WITH ASSUMPTIONS / NO-GO 判断 |
 | 用户描述里出现范围膨胀、补丁式修复、长上下文、缺少验收等风险 | `references/failure-modes.md` | 找出高风险失败模式，并转成 brief 里的边界/风险/停止条件 |
+| 任务看似简单，但隐藏非目标缺失、旧上下文、状态归属、前后端边界、验收缺失等 AI Coding 风险 | `references/gotchas.md` | 把高信号 gotcha 转成非目标、约束、未知项、停止条件或验收检查 |
 | 用户担心代码耦合、前后端边界、状态归属、全局变量、命名或调用关系混乱 | `references/coding-guardrails.md` | 生成代码结构约束，明确模块边界、状态归属、API 契约和可维护性检查 |
 | 用户要“生成 spec 框架”“更完整的技术方案/PRD/开发计划”，或任务达到 spec 复杂度 | `references/spec-framework.md` | 按科学约束生成可验证、可执行、不过度膨胀的 Spec 框架 |
 | 用户要“版本更新公告”“迭代日志”“开发回顾”“更新说明”“发版总结”“下一版计划” | `references/release-notes.md` | 生成面向用户/AI 工具/开发者自己的版本记录与迭代复盘 |
 | 用户给了一个具体场景，需要参考写法 | `references/usage-examples.md` | 参考示例的结构和表达方式，不要原样照抄 |
+| 维护者修改了 Skill，或用户想检查 VibeGuard 是否真的有效 | `references/evals.md` | 用轻量回归 prompts 检查输出是否具体、克制、可执行 |
 | 输出听起来太 AI、太营销、太流程化 | `references/wording.zh-CN.md` | 改成自然、直接、可信的中文表达 |
 
 使用 references 时遵守：
@@ -112,7 +115,7 @@ description: 何时使用：当用户想用 AI 写代码、修 bug、做小产�
 - 不要为了显得专业而强行走重流程。小任务用 Tiny Brief。
 - 如果用户未提供关键信息，写“未知”或“需要确认”，不要编造。
 - 如果一个不确定点会改变实现方向，先问；如果只是低风险细节，可以带假设推进。
-- 如果当前 `skill.md` 已经足够完成任务，不要额外读取 references。
+- 如果当前 `SKILL.md` 已经足够完成任务，不要额外读取 references。
 
 ## 工作流程
 
@@ -124,7 +127,7 @@ description: 何时使用：当用户想用 AI 写代码、修 bug、做小产�
 - `standard`：普通功能、bugfix、重构，需要明确范围和验收。
 - `spec`：跨模块、多页面、多角色、多数据流、迁移、支付、权限、数据结构、前后端契约、全局状态或核心架构边界等高风险任务。
 
-复杂度越高，越需要使用 `references/gates.md`、`references/failure-modes.md` 和 `references/spec-framework.md`。如果任务涉及前后端契约、状态管理、公共函数、公共组件或长期可维护性，还要读取 `references/coding-guardrails.md`。
+复杂度越高，越需要使用 `references/gates.md`、`references/failure-modes.md` 和 `references/spec-framework.md`。如果任务看似简单但可能有隐藏风险，优先读取 `references/gotchas.md`。如果任务涉及前后端契约、状态管理、公共函数、公共组件或长期可维护性，还要读取 `references/coding-guardrails.md`。
 
 当任务达到 `spec` 档，不要只套普通 brief 模板。必须先按 `references/spec-framework.md` 判断：哪些章节必须写、哪些章节应该省略、哪些信息只能作为假设、哪些未知项会阻塞开工。
 
